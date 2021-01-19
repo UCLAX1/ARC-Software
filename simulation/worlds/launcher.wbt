@@ -1,0 +1,237 @@
+#VRML_SIM R2021a utf8
+WorldInfo {
+  basicTimeStep 16
+  coordinateSystem "NUE"
+}
+Viewpoint {
+  orientation 0.2456005834181682 0.9604008561995119 0.13156955892568717 5.221045820166795
+  position -2.4898517260361808 0.8922864967420925 1.4763747742880993
+}
+TexturedBackground {
+}
+TexturedBackgroundLight {
+}
+Floor {
+  size 1 1
+}
+Solid {
+  translation 0.55 0.05 0
+  children [
+    DEF BOX_GEOMETRY Shape {
+      appearance PBRAppearance {
+        baseColor 0.3 0.2 0.2
+        roughness 1
+        metalness 0.05
+      }
+      geometry Box {
+        size 0.1 0.1 1
+      }
+    }
+  ]
+  name "solid(2)"
+  boundingObject USE BOX_GEOMETRY
+}
+Solid {
+  translation -5.60782e-07 0.05 -0.55
+  rotation 0 1 0 -1.5707953071795862
+  children [
+    USE BOX_GEOMETRY
+  ]
+  name "solid(3)"
+  boundingObject USE BOX_GEOMETRY
+}
+Solid {
+  translation -0.55 0.05 5.58265e-07
+  rotation 0 1 0 1.01503e-06
+  children [
+    USE BOX_GEOMETRY
+  ]
+  name "solid(4)"
+  boundingObject USE BOX_GEOMETRY
+}
+Solid {
+  translation 5.60792e-07 0.05 0.55
+  rotation 0 1 0 -1.5707953071795862
+  children [
+    USE BOX_GEOMETRY
+  ]
+  name "solid(5)"
+  boundingObject USE BOX_GEOMETRY
+}
+DEF four__wheel Robot {
+  translation 0.35 0.04 0
+  children [
+    DEF BODY Shape {
+      appearance PBRAppearance {
+        baseColor 1 0 0
+        metalness 0
+      }
+      geometry Box {
+        size 0.1 0.05 0.2
+      }
+    }
+    HingeJoint {
+      jointParameters HingeJointParameters {
+        anchor 0.06 0 0.05
+      }
+      device [
+        RotationalMotor {
+          name "wheel1"
+        }
+      ]
+      endPoint DEF WHEEL1 Solid {
+        translation 0.06 0 0.05
+        rotation 0 0 1 1.5708
+        children [
+          DEF WHEEL Shape {
+            appearance PBRAppearance {
+              baseColor 0 1 0
+              transparency 0.1
+              roughness 1
+              metalness 0.1
+            }
+            geometry Cylinder {
+              height 0.02
+              radius 0.04
+            }
+          }
+        ]
+        boundingObject USE WHEEL
+        physics DEF WHEEL_PH Physics {
+        }
+      }
+    }
+    HingeJoint {
+      jointParameters HingeJointParameters {
+        anchor -0.06 0 0.05
+      }
+      device [
+        RotationalMotor {
+          name "wheel2"
+        }
+      ]
+      endPoint DEF WHEEL_2 Solid {
+        translation -0.06 0 0.05
+        rotation 0 0 1 1.5708
+        children [
+          USE WHEEL
+        ]
+        name "solid(1)"
+        boundingObject USE WHEEL
+        physics USE WHEEL_PH
+      }
+    }
+    HingeJoint {
+      jointParameters HingeJointParameters {
+        anchor 0.06 0 -0.05
+      }
+      device [
+        RotationalMotor {
+          name "wheel3"
+        }
+      ]
+      endPoint DEF WHEEL_3 Solid {
+        translation 0.06 0 -0.05
+        rotation 0 0 1 1.5708
+        children [
+          USE WHEEL
+        ]
+        name "solid(2)"
+        boundingObject USE WHEEL
+        physics USE WHEEL_PH
+      }
+    }
+    HingeJoint {
+      jointParameters HingeJointParameters {
+        anchor -0.06 0 -0.05
+      }
+      device [
+        RotationalMotor {
+          name "wheel4"
+        }
+      ]
+      endPoint DEF WHEEL_4 Solid {
+        translation -0.06 0 -0.05
+        rotation 0 0 1 1.5708
+        children [
+          USE WHEEL
+        ]
+        name "solid(3)"
+        boundingObject USE WHEEL
+        physics USE WHEEL_PH
+      }
+    }
+    DistanceSensor {
+      translation 0.03 0 0.1
+      rotation 0 -1 0 1.309
+      children [
+        DEF SENSOR_GEOM Shape {
+          appearance PBRAppearance {
+          }
+          geometry Box {
+            size 0.01 0.01 0.01
+          }
+        }
+      ]
+      name "ds_left"
+    }
+    DistanceSensor {
+      translation -0.03 0 0.1
+      rotation 0 1 0 -1.8325953071795862
+      children [
+        DEF SENSOR_GEOM Shape {
+          appearance PBRAppearance {
+          }
+          geometry Box {
+            size 0.01 0.01 0.01
+          }
+        }
+      ]
+      name "ds_right"
+    }
+  ]
+  boundingObject USE BODY
+  physics Physics {
+  }
+  controller "4_wheel_robot"
+}
+Robot {
+  translation 0 0.02 0
+  children [
+    SliderJoint {
+      jointParameters JointParameters {
+        axis 0 1 0
+        maxStop 0.5
+      }
+      device [
+        LinearMotor {
+          name "slide_motor"
+        }
+      ]
+      endPoint Solid {
+        translation 0 0.04 0
+        children [
+          DEF Projectile Shape {
+            appearance PBRAppearance {
+              roughness 0.5
+              metalness 0
+            }
+            geometry Sphere {
+              radius 0.01
+              subdivision 2
+            }
+          }
+        ]
+        boundingObject USE Projectile
+        physics Physics {
+        }
+      }
+    }
+    USE BODY
+  ]
+  name "robot(1)"
+  boundingObject USE BODY
+  physics Physics {
+  }
+  controller "launcher"
+}
