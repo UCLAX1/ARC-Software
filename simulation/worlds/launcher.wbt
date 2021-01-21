@@ -1,11 +1,11 @@
 #VRML_SIM R2021a utf8
 WorldInfo {
-  basicTimeStep 16
+  basicTimeStep 8
   coordinateSystem "NUE"
 }
 Viewpoint {
-  orientation 0.2456005834181682 0.9604008561995119 0.13156955892568717 5.221045820166795
-  position -2.4898517260361808 0.8922864967420925 1.4763747742880993
+  orientation 0.09262768749208132 0.9950672081487532 0.0355156694561036 5.402787335419836
+  position -1.145990424042224 0.3527192578446484 0.9358823954172688
 }
 TexturedBackground {
 }
@@ -201,29 +201,33 @@ Robot {
     SliderJoint {
       jointParameters JointParameters {
         axis 0 1 0
-        maxStop 0.5
+        minStop -0.03
+        maxStop 0.25
+        springConstant 500
       }
       device [
         LinearMotor {
           name "slide_motor"
+          maxPosition 1
+          maxForce 25
         }
       ]
       endPoint Solid {
-        translation 0 0.04 0
+        translation 0 0.06 0
         children [
-          DEF Projectile Shape {
+          DEF Launchpad Shape {
             appearance PBRAppearance {
-              roughness 0.5
-              metalness 0
+              baseColor 1 0 0
             }
-            geometry Sphere {
-              radius 0.01
-              subdivision 2
+            geometry Box {
+              size 0.1 0.005 0.1
             }
           }
         ]
-        boundingObject USE Projectile
+        boundingObject USE Launchpad
         physics Physics {
+          density -1
+          mass 0.01
         }
       }
     }
@@ -234,4 +238,22 @@ Robot {
   physics Physics {
   }
   controller "launcher"
+}
+Solid {
+  translation 0 0.11 0
+  children [
+    Shape {
+      appearance PBRAppearance {
+      }
+      geometry DEF Projectile Sphere {
+        radius 0.02
+        subdivision 2
+      }
+    }
+  ]
+  boundingObject USE Projectile
+  physics Physics {
+    density -1
+    mass 0.001
+  }
 }
