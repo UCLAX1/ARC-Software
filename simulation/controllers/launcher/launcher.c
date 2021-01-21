@@ -48,7 +48,7 @@ int main(int argc, char **argv) {
       falling = !falling;
     }
     if (falling == 0) {
-      wb_motor_set_force(pusher, .043);
+      wb_motor_set_force(pusher, -15);
     }
     else {
       wb_motor_set_force(pusher, 0);
