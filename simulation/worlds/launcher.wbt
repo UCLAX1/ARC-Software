@@ -4,8 +4,8 @@ WorldInfo {
   coordinateSystem "NUE"
 }
 Viewpoint {
-  orientation 0.09262768749208132 0.9950672081487532 0.0355156694561036 5.402787335419836
-  position -1.145990424042224 0.3527192578446484 0.9358823954172688
+  orientation 0.1378526741275114 0.9890231097722472 0.0531970729676693 5.437687610518027
+  position -1.072521798240047 0.3329545830579648 0.8771840519124738
 }
 TexturedBackground {
 }
@@ -59,7 +59,7 @@ Solid {
   boundingObject USE BOX_GEOMETRY
 }
 DEF four__wheel Robot {
-  translation 0.35 0.04 0
+  translation 0.67 0.04 0
   children [
     DEF BODY Shape {
       appearance PBRAppearance {
@@ -81,7 +81,7 @@ DEF four__wheel Robot {
       ]
       endPoint DEF WHEEL1 Solid {
         translation 0.06 0 0.05
-        rotation 0 0 1 1.5708
+        rotation 1.2517116859047111e-10 -1.251716283706907e-10 1 1.5708
         children [
           DEF WHEEL Shape {
             appearance PBRAppearance {
@@ -112,7 +112,7 @@ DEF four__wheel Robot {
       ]
       endPoint DEF WHEEL_2 Solid {
         translation -0.06 0 0.05
-        rotation 0 0 1 1.5708
+        rotation 1.2517076243323637e-10 -1.2517122221196404e-10 1 1.5708
         children [
           USE WHEEL
         ]
@@ -132,7 +132,7 @@ DEF four__wheel Robot {
       ]
       endPoint DEF WHEEL_3 Solid {
         translation 0.06 0 -0.05
-        rotation 0 0 1 1.5708
+        rotation -1.2516341950922544e-10 1.251638792609811e-10 1 1.5708
         children [
           USE WHEEL
         ]
@@ -152,7 +152,7 @@ DEF four__wheel Robot {
       ]
       endPoint DEF WHEEL_4 Solid {
         translation -0.06 0 -0.05
-        rotation 0 0 1 1.5708
+        rotation -1.2515744181086859e-10 1.2515790154066702e-10 1 1.5708
         children [
           USE WHEEL
         ]
@@ -208,12 +208,14 @@ Robot {
       device [
         LinearMotor {
           name "slide_motor"
-          maxPosition 1
+          minPosition -0.03
+          maxPosition 0.25
           maxForce 25
         }
       ]
       endPoint Solid {
-        translation 0 0.06 0
+        translation 3.627200297787333e-19 0.06 4.0068381956374637e-19
+        rotation 0.021447128559780933 0.9992743609925998 -0.03147653315363493 -5.257062957556269e-17
         children [
           DEF Launchpad Shape {
             appearance PBRAppearance {
@@ -239,21 +241,65 @@ Robot {
   }
   controller "launcher"
 }
-Solid {
+Robot {
   translation 0 0.11 0
   children [
-    Shape {
+    Connector {
+      model "magnet"
+      boundingObject Sphere {
+        radius 0.02
+        subdivision 2
+      }
+      physics Physics {
+        density -1
+        mass 0.001
+      }
+      type "active"
+      isLocked TRUE
+      autoLock TRUE
+      distanceTolerance 0.2
+      axisTolerance 3.14
+      rotationTolerance 3.14
+    }
+    DEF Projectile_attachable Shape {
       appearance PBRAppearance {
       }
-      geometry DEF Projectile Sphere {
+      geometry Sphere {
         radius 0.02
         subdivision 2
       }
     }
   ]
-  boundingObject USE Projectile
+  name "robot(2)"
+  boundingObject USE Projectile_attachable
   physics Physics {
     density -1
     mass 0.001
   }
+  controller "projectile_controller"
+}
+Robot {
+  translation 0 0.41 0
+  children [
+    DEF roof_shape Shape {
+      appearance PBRAppearance {
+        baseColor 1 0.8 0.8
+      }
+      geometry Box {
+        size 0.6 0.01 0.6
+      }
+    }
+    Connector {
+      model "magnet"
+      boundingObject USE roof_shape
+      type "passive"
+      autoLock TRUE
+      distanceTolerance 0.2
+      axisTolerance 3.14
+      rotationTolerance 3.14
+    }
+  ]
+  name "robot(3)"
+  boundingObject USE roof_shape
+  controller "roof_controller"
 }
