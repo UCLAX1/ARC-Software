@@ -22,18 +22,23 @@ int main() {
   wb_connector_enable_presence(connector, TIME_STEP);
   
   state = INACTIVE;
-  iter = 25;
+  iter = 0;
 
   while (wb_robot_step(TIME_STEP) != -1) {
 
-    if (wb_connector_get_presence(connector) == 1) {
-      return -1;
-      //wb_connector_lock(connector);
+    if (state == INACTIVE && wb_connector_get_presence(connector) == 1) {
+      wb_connector_lock(connector);
+      state = CONNECTOR_IN_PLACE;
+      iter = 0;
     }
-    if (wb_connector_get_presence(connector) == -1) {
-      return -1;
+    
+    if (state == CONNECTOR_IN_PLACE && iter >= 100) {
+      wb_connector_unlock(connector);
+      state = INACTIVE;
     }
         
+        
+    iter++;    
     /*switch (state) {
       // Projectile attached to magnetic ceiling
       case CONNECTOR_IN_PLACE:

@@ -5,6 +5,6 @@ sceneTreePerspectives: 000000ff0000000100000002000000c0000000fa01000000020100000
 maximizedDockId: -1
 centralWidgetVisible: 1
 orthographicViewHeight: 1
-textFiles: 1 "controllers/launcher/launcher.c" "controllers/projectile_controller/projectile_controller.c" "controllers/roof_controller/roof_controller.c"
+textFiles: 0 "controllers/launcher/launcher.c" "controllers/projectile_controller/projectile_controller.c" "controllers/roof_controller/roof_controller.c"
 globalOptionalRendering: JointAxes
 consoles: Console:All:All

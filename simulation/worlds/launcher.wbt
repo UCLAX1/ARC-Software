@@ -4,15 +4,15 @@ WorldInfo {
   coordinateSystem "NUE"
 }
 Viewpoint {
-  orientation 0.1378526741275114 0.9890231097722472 0.0531970729676693 5.437687610518027
-  position -1.072521798240047 0.3329545830579648 0.8771840519124738
+  orientation 0.13966901012178623 0.9844906940693786 0.10616327473469113 4.912812591408732
+  position -1.027549269894316 0.41729740952259725 0.3487922762522925
 }
 TexturedBackground {
 }
 TexturedBackgroundLight {
 }
 Floor {
-  size 1 1
+  size 1 2
 }
 Solid {
   translation 0.55 0.05 0
@@ -39,6 +39,24 @@ Solid {
   ]
   name "solid(3)"
   boundingObject USE BOX_GEOMETRY
+}
+Solid {
+  translation 0.255175 0.0306814 -0.79
+  rotation -0.12942794302188446 0.9831055672070398 -0.12942894302144423 -1.5878353071795859
+  children [
+    DEF Ramp Shape {
+      appearance PBRAppearance {
+        baseColor 0.1 0.1 0.1
+        roughness 1
+        metalness 0.2
+      }
+      geometry Box {
+        size 0.3 0.01 0.3
+      }
+    }
+  ]
+  name "solid(6)"
+  boundingObject USE Ramp
 }
 Solid {
   translation -0.55 0.05 5.58265e-07
@@ -195,7 +213,7 @@ DEF four__wheel Robot {
   }
   controller "4_wheel_robot"
 }
-Robot {
+DEF Launcher_robot Robot {
   translation 0 0.02 0
   children [
     SliderJoint {
@@ -241,23 +259,13 @@ Robot {
   }
   controller "launcher"
 }
-Robot {
-  translation 0 0.11 0
+DEF Projectile_robot Robot {
+  translation 0.37 0.11 -0.43
   children [
     Connector {
-      model "magnet"
-      boundingObject Sphere {
-        radius 0.02
-        subdivision 2
-      }
-      physics Physics {
-        density -1
-        mass 0.001
-      }
-      type "active"
+      model "magnetic"
       isLocked TRUE
       autoLock TRUE
-      distanceTolerance 0.2
       axisTolerance 3.14
       rotationTolerance 3.14
     }
@@ -278,7 +286,7 @@ Robot {
   }
   controller "projectile_controller"
 }
-Robot {
+DEF Roof_robot Robot {
   translation 0 0.41 0
   children [
     DEF roof_shape Shape {
@@ -290,16 +298,103 @@ Robot {
       }
     }
     Connector {
-      model "magnet"
-      boundingObject USE roof_shape
-      type "passive"
+      translation 0 -0.005 0
+      rotation -1 0 0 -1.5707953071795862
+      model "magnetic"
       autoLock TRUE
-      distanceTolerance 0.2
       axisTolerance 3.14
       rotationTolerance 3.14
+      numberOfRotations 0
     }
   ]
   name "robot(3)"
   boundingObject USE roof_shape
-  controller "roof_controller"
+  controller "projectile_controller"
+}
+Robot {
+  translation 0.15 0.03 -0.74
+  rotation 1 0 0 1.5708
+  children [
+    Connector {
+      translation 0 0.025 0
+      model "magnetic"
+      autoLock TRUE
+      axisTolerance 3.14
+      rotationTolerance 3.14
+    }
+    DEF Cylinder_shape Shape {
+      appearance PBRAppearance {
+        baseColor 0.5 1 0.5
+        metalness 0.5
+      }
+      geometry Cylinder {
+        height 0.05
+        radius 0.02
+      }
+    }
+  ]
+  name "robot(4)"
+  boundingObject USE Cylinder_shape
+  physics Physics {
+  }
+  controller "projectile_controller"
+}
+Robot {
+  translation 0.11 0.02 -0.69
+  rotation 1 0 0 -1.5707953071795862
+  children [
+    Connector {
+      translation 0 0.025 0
+      model "magnetic"
+      autoLock TRUE
+      axisTolerance 3.14
+      rotationTolerance 3.14
+    }
+    DEF Cylinder_shape Shape {
+      appearance PBRAppearance {
+        baseColor 0.5 1 0.5
+        metalness 0.5
+      }
+      geometry Cylinder {
+        height 0.05
+        radius 0.02
+      }
+    }
+  ]
+  name "robot(5)"
+  boundingObject USE Cylinder_shape
+  physics Physics {
+  }
+  controller "projectile_controller"
+}
+Robot {
+  translation 0 0.14 1.4083e-13
+  rotation -1 0 0 -5.307179586466759e-06
+  children [
+    Connector {
+      translation 0 0.025 0
+      rotation 1 0 0 -1.5707953071795862
+      model "magnetic"
+      autoLock TRUE
+      axisTolerance 3.14
+      rotationTolerance 3.14
+      numberOfRotations 0
+    }
+    DEF Cylinder_shape Shape {
+      appearance PBRAppearance {
+        baseColor 0.5 1 0.5
+        metalness 0.5
+      }
+      geometry Cylinder {
+        height 0.05
+        radius 0.02
+      }
+    }
+  ]
+  name "robot(6)"
+  boundingObject USE Cylinder_shape
+  physics Physics {
+    density 100
+  }
+  controller "projectile_controller"
 }
