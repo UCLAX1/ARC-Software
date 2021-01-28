@@ -9,7 +9,7 @@ int main(int argc, char **argv) {
   wb_robot_init();
   
   int iter = 0;
-  int falling = 0;
+  int loading = 0;
   
   WbDeviceTag pusher;
   pusher = wb_robot_get_device("slide_motor");
@@ -45,12 +45,13 @@ int main(int argc, char **argv) {
       }
     }*/
     if (iter % 50 == 0) {
-      falling = !falling;
+      loading = !loading;
     }
-    if (falling == 0) {
+    if (loading == 0) {
       wb_motor_set_force(pusher, -15);
     }
     else {
+      // Launch
       wb_motor_set_force(pusher, 0);
     }
     iter++;

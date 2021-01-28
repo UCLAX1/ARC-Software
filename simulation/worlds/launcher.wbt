@@ -4,15 +4,15 @@ WorldInfo {
   coordinateSystem "NUE"
 }
 Viewpoint {
-  orientation 0.09262768749208132 0.9950672081487532 0.0355156694561036 5.402787335419836
-  position -1.145990424042224 0.3527192578446484 0.9358823954172688
+  orientation 0.13966901012178623 0.9844906940693786 0.10616327473469113 4.912812591408732
+  position -1.027549269894316 0.41729740952259725 0.3487922762522925
 }
 TexturedBackground {
 }
 TexturedBackgroundLight {
 }
 Floor {
-  size 1 1
+  size 1 2
 }
 Solid {
   translation 0.55 0.05 0
@@ -41,6 +41,24 @@ Solid {
   boundingObject USE BOX_GEOMETRY
 }
 Solid {
+  translation 0.255175 0.0306814 -0.79
+  rotation -0.12942794302188446 0.9831055672070398 -0.12942894302144423 -1.5878353071795859
+  children [
+    DEF Ramp Shape {
+      appearance PBRAppearance {
+        baseColor 0.1 0.1 0.1
+        roughness 1
+        metalness 0.2
+      }
+      geometry Box {
+        size 0.3 0.01 0.3
+      }
+    }
+  ]
+  name "solid(6)"
+  boundingObject USE Ramp
+}
+Solid {
   translation -0.55 0.05 5.58265e-07
   rotation 0 1 0 1.01503e-06
   children [
@@ -59,7 +77,7 @@ Solid {
   boundingObject USE BOX_GEOMETRY
 }
 DEF four__wheel Robot {
-  translation 0.35 0.04 0
+  translation 0.67 0.04 0
   children [
     DEF BODY Shape {
       appearance PBRAppearance {
@@ -81,7 +99,7 @@ DEF four__wheel Robot {
       ]
       endPoint DEF WHEEL1 Solid {
         translation 0.06 0 0.05
-        rotation 0 0 1 1.5708
+        rotation 1.2517116859047111e-10 -1.251716283706907e-10 1 1.5708
         children [
           DEF WHEEL Shape {
             appearance PBRAppearance {
@@ -112,7 +130,7 @@ DEF four__wheel Robot {
       ]
       endPoint DEF WHEEL_2 Solid {
         translation -0.06 0 0.05
-        rotation 0 0 1 1.5708
+        rotation 1.2517076243323637e-10 -1.2517122221196404e-10 1 1.5708
         children [
           USE WHEEL
         ]
@@ -132,7 +150,7 @@ DEF four__wheel Robot {
       ]
       endPoint DEF WHEEL_3 Solid {
         translation 0.06 0 -0.05
-        rotation 0 0 1 1.5708
+        rotation -1.2516341950922544e-10 1.251638792609811e-10 1 1.5708
         children [
           USE WHEEL
         ]
@@ -152,7 +170,7 @@ DEF four__wheel Robot {
       ]
       endPoint DEF WHEEL_4 Solid {
         translation -0.06 0 -0.05
-        rotation 0 0 1 1.5708
+        rotation -1.2515744181086859e-10 1.2515790154066702e-10 1 1.5708
         children [
           USE WHEEL
         ]
@@ -195,7 +213,7 @@ DEF four__wheel Robot {
   }
   controller "4_wheel_robot"
 }
-Robot {
+DEF Launcher_robot Robot {
   translation 0 0.02 0
   children [
     SliderJoint {
@@ -208,12 +226,14 @@ Robot {
       device [
         LinearMotor {
           name "slide_motor"
-          maxPosition 1
+          minPosition -0.03
+          maxPosition 0.25
           maxForce 25
         }
       ]
       endPoint Solid {
-        translation 0 0.06 0
+        translation 3.627200297787333e-19 0.06 4.0068381956374637e-19
+        rotation 0.021447128559780933 0.9992743609925998 -0.03147653315363493 -5.257062957556269e-17
         children [
           DEF Launchpad Shape {
             appearance PBRAppearance {
@@ -239,21 +259,142 @@ Robot {
   }
   controller "launcher"
 }
-Solid {
-  translation 0 0.11 0
+DEF Projectile_robot Robot {
+  translation 0.37 0.11 -0.43
   children [
-    Shape {
+    Connector {
+      model "magnetic"
+      isLocked TRUE
+      autoLock TRUE
+      axisTolerance 3.14
+      rotationTolerance 3.14
+    }
+    DEF Projectile_attachable Shape {
       appearance PBRAppearance {
       }
-      geometry DEF Projectile Sphere {
+      geometry Sphere {
         radius 0.02
         subdivision 2
       }
     }
   ]
-  boundingObject USE Projectile
+  name "robot(2)"
+  boundingObject USE Projectile_attachable
   physics Physics {
     density -1
     mass 0.001
   }
+  controller "projectile_controller"
+}
+DEF Roof_robot Robot {
+  translation 0 0.41 0
+  children [
+    DEF roof_shape Shape {
+      appearance PBRAppearance {
+        baseColor 1 0.8 0.8
+      }
+      geometry Box {
+        size 0.6 0.01 0.6
+      }
+    }
+    Connector {
+      translation 0 -0.005 0
+      rotation -1 0 0 -1.5707953071795862
+      model "magnetic"
+      autoLock TRUE
+      axisTolerance 3.14
+      rotationTolerance 3.14
+      numberOfRotations 0
+    }
+  ]
+  name "robot(3)"
+  boundingObject USE roof_shape
+  controller "projectile_controller"
+}
+Robot {
+  translation 0.15 0.03 -0.74
+  rotation 1 0 0 1.5708
+  children [
+    Connector {
+      translation 0 0.025 0
+      model "magnetic"
+      autoLock TRUE
+      axisTolerance 3.14
+      rotationTolerance 3.14
+    }
+    DEF Cylinder_shape Shape {
+      appearance PBRAppearance {
+        baseColor 0.5 1 0.5
+        metalness 0.5
+      }
+      geometry Cylinder {
+        height 0.05
+        radius 0.02
+      }
+    }
+  ]
+  name "robot(4)"
+  boundingObject USE Cylinder_shape
+  physics Physics {
+  }
+  controller "projectile_controller"
+}
+Robot {
+  translation 0.11 0.02 -0.69
+  rotation 1 0 0 -1.5707953071795862
+  children [
+    Connector {
+      translation 0 0.025 0
+      model "magnetic"
+      autoLock TRUE
+      axisTolerance 3.14
+      rotationTolerance 3.14
+    }
+    DEF Cylinder_shape Shape {
+      appearance PBRAppearance {
+        baseColor 0.5 1 0.5
+        metalness 0.5
+      }
+      geometry Cylinder {
+        height 0.05
+        radius 0.02
+      }
+    }
+  ]
+  name "robot(5)"
+  boundingObject USE Cylinder_shape
+  physics Physics {
+  }
+  controller "projectile_controller"
+}
+Robot {
+  translation 0 0.14 1.4083e-13
+  rotation -1 0 0 -5.307179586466759e-06
+  children [
+    Connector {
+      translation 0 0.025 0
+      rotation 1 0 0 -1.5707953071795862
+      model "magnetic"
+      autoLock TRUE
+      axisTolerance 3.14
+      rotationTolerance 3.14
+      numberOfRotations 0
+    }
+    DEF Cylinder_shape Shape {
+      appearance PBRAppearance {
+        baseColor 0.5 1 0.5
+        metalness 0.5
+      }
+      geometry Cylinder {
+        height 0.05
+        radius 0.02
+      }
+    }
+  ]
+  name "robot(6)"
+  boundingObject USE Cylinder_shape
+  physics Physics {
+    density 100
+  }
+  controller "projectile_controller"
 }
