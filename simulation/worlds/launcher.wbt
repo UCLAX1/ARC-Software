@@ -4,8 +4,8 @@ WorldInfo {
   coordinateSystem "NUE"
 }
 Viewpoint {
-  orientation 0.13966901012178623 0.9844906940693786 0.10616327473469113 4.912812591408732
-  position -1.027549269894316 0.41729740952259725 0.3487922762522925
+  orientation -0.19714929044137947 -0.9760866339191158 -0.0915807859919917 0.9508180337822213
+  position -0.8649176360089487 0.3743403844636433 0.6809189834544863
 }
 TexturedBackground {
 }
@@ -214,7 +214,7 @@ DEF four__wheel Robot {
   controller "4_wheel_robot"
 }
 DEF Launcher_robot Robot {
-  translation 0 0.02 0
+  translation 0 0.025 0
   children [
     SliderJoint {
       jointParameters JointParameters {
@@ -225,7 +225,7 @@ DEF Launcher_robot Robot {
       }
       device [
         LinearMotor {
-          name "slide_motor"
+          name "spring_motor"
           minPosition -0.03
           maxPosition 0.25
           maxForce 25
@@ -235,6 +235,49 @@ DEF Launcher_robot Robot {
         translation 3.627200297787333e-19 0.06 4.0068381956374637e-19
         rotation 0.021447128559780933 0.9992743609925998 -0.03147653315363493 -5.257062957556269e-17
         children [
+          SliderJoint {
+            jointParameters JointParameters {
+              position 0.015
+              axis 0 1 0
+              minStop 0.015
+              maxStop 1
+            }
+            device [
+              LinearMotor {
+                name "tether_motor"
+                minPosition 0.015
+                maxPosition 1
+              }
+            ]
+            endPoint Solid {
+              translation 0 0.015000023114267952 0
+              children [
+                Connector {
+                  translation 0 0.015 0
+                  rotation 1 0 0 -1.5707953071795862
+                  model "magnetic"
+                  autoLock TRUE
+                  axisTolerance 3.14
+                  rotationTolerance 3.14
+                  numberOfRotations 0
+                }
+                DEF Cylinder_proj Shape {
+                  appearance PBRAppearance {
+                    baseColor 0.3 0.3 1
+                    metalness 0.5
+                  }
+                  geometry Cylinder {
+                    height 0.03
+                    radius 0.025
+                  }
+                }
+              ]
+              boundingObject USE Cylinder_proj
+              physics Physics {
+                density 100
+              }
+            }
+          }
           DEF Launchpad Shape {
             appearance PBRAppearance {
               baseColor 1 0 0
@@ -256,6 +299,7 @@ DEF Launcher_robot Robot {
   name "robot(1)"
   boundingObject USE BODY
   physics Physics {
+    density 100
   }
   controller "launcher"
 }
@@ -368,7 +412,7 @@ Robot {
   controller "projectile_controller"
 }
 Robot {
-  translation 0 0.14 1.4083e-13
+  translation 0 0.14 0.38
   rotation -1 0 0 -5.307179586466759e-06
   children [
     Connector {

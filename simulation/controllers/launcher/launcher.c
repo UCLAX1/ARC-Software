@@ -1,67 +1,84 @@
+#include <webots/connector.h>
 #include <webots/distance_sensor.h>
 #include <webots/motor.h>
+#include <webots/position_sensor.h>
 #include <webots/robot.h>
 #include <stdio.h>
 
 #define TIME_STEP 64
 
+typedef enum { INACTIVE, LOADING, CONNECTING, CLIMBING } states;
+
 int main(int argc, char **argv) {
   wb_robot_init();
   
+  states state = INACTIVE;
   int iter = 0;
-  int loading = 0;
   
-  WbDeviceTag pusher;
-  pusher = wb_robot_get_device("slide_motor");
-  //wb_motor_set_position(pusher, 0);
-  //wb_motor_set_velocity(pusher, .01);
+  // Enable spring motor
+  WbDeviceTag spring_motor;
+  spring_motor = wb_robot_get_device("spring_motor");
+  
+  // Enable tether motor
+  WbDeviceTag tether_motor;
+  tether_motor = wb_robot_get_device("tether_motor");
+  
+  // Enable magnet
+  WbDeviceTag connector;
+  connector = wb_robot_get_device("connector");
+  wb_connector_enable_presence(connector, TIME_STEP);
   
   // Behavior loop
   while (wb_robot_step(TIME_STEP) != -1) {
-    /*double left_speed = 1.0;
-    double right_speed = 1.0;
-    double ds_values[2];
     
-    // Avoid obstacle
-    if (avoid_obstacle == 1) {
-      read_sensors(ds, ds_values, 2);
-      
-      if (ds_values[0] < 950.0 || ds_values[1] < 950.0) {
-        left_speed = 1.0;
-        right_speed = -1.0;
-      }
-      else {
-        avoid_obstacle = 0;
-      }  
-    } 
-    else { // read sensors
-      read_sensors(ds, ds_values, 2);
-      
-      printf("Left:  %f  |  Right  %f", ds_values[0], ds_values[1]);  
-      
-      // Change to avoid state if obstacle is near
-      if (ds_values[0] < 950.0 || ds_values[1] < 950.0) {
-        avoid_obstacle = 1;
-      }
-    }*/
-    if (iter % 50 == 0) {
-      loading = !loading;
+    switch(state) {
+      case INACTIVE:
+        wb_motor_set_force(spring_motor, 0);
+        wb_motor_set_force(tether_motor, 0);
+        
+        if (iter >= 50) {
+          state = LOADING;
+          iter = 0;
+        }
+        break;
+        
+      case LOADING:
+        wb_motor_set_force(spring_motor, -15);
+        wb_motor_set_force(tether_motor, 0);
+        
+        if (iter >= 50) {
+          state = CONNECTING;
+          iter = 0;
+        }
+        break;
+          
+      case CONNECTING:
+        wb_motor_set_force(spring_motor, 0);
+        wb_motor_set_force(tether_motor, 0);
+        
+        if (wb_connector_get_presence(connector) == 1) {
+          wb_connector_lock(connector);
+        }
+        
+        if (iter >= 50) {
+          state = CLIMBING;
+          iter = 0;
+        }
+        break;
+        
+      case CLIMBING:
+        wb_motor_set_force(spring_motor, 0);
+        wb_motor_set_force(tether_motor, -1.5);
+        
+         if (iter >= 50) {
+          state = INACTIVE;
+          iter = 0;
+          wb_connector_unlock(connector);
+        }
     }
-    if (loading == 0) {
-      wb_motor_set_force(pusher, -15);
-    }
-    else {
-      // Launch
-      wb_motor_set_force(pusher, 0);
-    }
+            
     iter++;
     
-    
-    printf("Iter = %d", iter);
-    fflush(stdout);
-    //wb_motor_set_velocity(wheels[1], right_speed);
-    //wb_motor_set_velocity(wheels[2], left_speed);
-    //wb_motor_set_velocity(wheels[3], right_speed);
   }
   wb_robot_cleanup();
   return 0;  // EXIT_SUCCESS
