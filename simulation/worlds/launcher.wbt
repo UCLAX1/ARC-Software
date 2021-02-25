@@ -4,8 +4,8 @@ WorldInfo {
   coordinateSystem "NUE"
 }
 Viewpoint {
-  orientation -0.19714929044137947 -0.9760866339191158 -0.0915807859919917 0.9508180337822213
-  position -0.8649176360089487 0.3743403844636433 0.6809189834544863
+  orientation -0.07178347004786154 -0.9970137504668151 -0.028473054068421884 0.9332611001538367
+  position -0.8935310077994307 0.188143850819833 0.7036433456039293
 }
 TexturedBackground {
 }
@@ -235,47 +235,68 @@ DEF Launcher_robot Robot {
         translation 3.627200297787333e-19 0.06 4.0068381956374637e-19
         rotation 0.021447128559780933 0.9992743609925998 -0.03147653315363493 -5.257062957556269e-17
         children [
-          SliderJoint {
-            jointParameters JointParameters {
-              position 0.015
-              axis 0 1 0
-              minStop 0.015
-              maxStop 1
+          BallJoint {
+            jointParameters DEF String_params BallJointParameters {
+              springConstant 10
+              dampingConstant 5
             }
-            device [
-              LinearMotor {
-                name "tether_motor"
-                minPosition 0.015
-                maxPosition 1
-              }
-            ]
             endPoint Solid {
-              translation 0 0.015000023114267952 0
               children [
-                Connector {
-                  translation 0 0.015 0
-                  rotation 1 0 0 -1.5707953071795862
-                  model "magnetic"
-                  autoLock TRUE
-                  axisTolerance 3.14
-                  rotationTolerance 3.14
-                  numberOfRotations 0
-                }
-                DEF Cylinder_proj Shape {
-                  appearance PBRAppearance {
-                    baseColor 0.3 0.3 1
-                    metalness 0.5
+                SliderJoint {
+                  jointParameters JointParameters {
+                    position 0.015
+                    axis 0 1 0
+                    minStop 0.015
+                    maxStop 1
                   }
-                  geometry Cylinder {
-                    height 0.03
-                    radius 0.025
+                  device [
+                    LinearMotor {
+                      name "tether_motor"
+                      minPosition 0.015
+                      maxPosition 1
+                    }
+                  ]
+                  endPoint Solid {
+                    children [
+                      BallJoint {
+                        jointParameters BallJointParameters {
+                          springConstant 10
+                          dampingConstant 5
+                        }
+                        endPoint Solid {
+                          translation 0 0.015000023114267952 0
+                          children [
+                            Connector {
+                              translation 0 0.015 0
+                              rotation 1 0 0 -1.5707953071795862
+                              model "magnetic"
+                              autoLock TRUE
+                              axisTolerance 3.14
+                              rotationTolerance 3.14
+                              numberOfRotations 0
+                            }
+                            DEF Cylinder_proj Shape {
+                              appearance PBRAppearance {
+                                baseColor 0.3 0.3 1
+                                metalness 0.5
+                              }
+                              geometry Cylinder {
+                                height 0.03
+                                radius 0.025
+                              }
+                            }
+                          ]
+                          boundingObject USE Cylinder_proj
+                          physics Physics {
+                            density 100
+                          }
+                        }
+                      }
+                    ]
                   }
                 }
               ]
-              boundingObject USE Cylinder_proj
-              physics Physics {
-                density 100
-              }
+              name "solid(1)"
             }
           }
           DEF Launchpad Shape {
