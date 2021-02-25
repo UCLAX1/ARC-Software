@@ -37,40 +37,7 @@ int main() {
       state = INACTIVE;
     }
         
-        
     iter++;    
-    /*switch (state) {
-      // Projectile attached to magnetic ceiling
-      case CONNECTOR_IN_PLACE:
-        if (iter >= 25) {
-          state = INACTIVE;
-          iter = 0;  
-        }
-        else {
-          iter++;
-        }
-        break;
-
-      // Projectile launching, ready to connect
-      case CONNECTING:
-        if (wb_connector_get_presence(connector) == 1) {
-          wb_connector_lock(connector);
-          state = CONNECTOR_IN_PLACE;
-        }
-        break;
-
-      // wait for the motor to be in the new place (hopping).
-      case INACTIVE:
-        if (iter >= 75) {
-          state = CONNECTING;
-          iter = 0;  
-        }
-        else {
-          iter++;
-        }
-        break;
-      }*/
-    
   }
   wb_robot_cleanup();
   return 0;  // EXIT_SUCCESS
