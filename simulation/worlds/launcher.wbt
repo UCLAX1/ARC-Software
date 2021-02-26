@@ -4,8 +4,8 @@ WorldInfo {
   coordinateSystem "NUE"
 }
 Viewpoint {
-  orientation -0.07178347004786154 -0.9970137504668151 -0.028473054068421884 0.9332611001538367
-  position -0.8935310077994307 0.188143850819833 0.7036433456039293
+  orientation -0.11436501525142803 -0.9893280906976006 -0.0902805197325579 1.4118118109104316
+  position -1.211448011576095 0.40761339829848625 0.017886660425423168
 }
 TexturedBackground {
 }
@@ -214,7 +214,7 @@ DEF four__wheel Robot {
   controller "4_wheel_robot"
 }
 DEF Launcher_robot Robot {
-  translation 0 0.025 0
+  translation 0 0.025 -0.09
   children [
     SliderJoint {
       jointParameters JointParameters {
@@ -236,18 +236,27 @@ DEF Launcher_robot Robot {
         rotation 0.021447128559780933 0.9992743609925998 -0.03147653315363493 -5.257062957556269e-17
         children [
           BallJoint {
-            jointParameters DEF String_params BallJointParameters {
-              springConstant 10
-              dampingConstant 5
+            jointParameters DEF tether_joint_params BallJointParameters {
+              position 0.3
+              minStop -1.57
+              maxStop 1.57
             }
             endPoint Solid {
+              rotation 0.9999999551904559 -0.0002960072213053016 -4.470806710857097e-05 0.3001500856954891
               children [
+                DEF tether_endpoint Shape {
+                  geometry Sphere {
+                    radius 0.003
+                  }
+                }
                 SliderJoint {
                   jointParameters JointParameters {
-                    position 0.015
+                    position 0.36
                     axis 0 1 0
                     minStop 0.015
                     maxStop 1
+                    springConstant 5
+                    dampingConstant 1
                   }
                   device [
                     LinearMotor {
@@ -257,14 +266,18 @@ DEF Launcher_robot Robot {
                     }
                   ]
                   endPoint Solid {
+                    translation 0 0.345 0
                     children [
+                      USE tether_endpoint
                       BallJoint {
                         jointParameters BallJointParameters {
-                          springConstant 10
-                          dampingConstant 5
+                          position -0.3
+                          minStop -1.57
+                          maxStop 1.57
                         }
                         endPoint Solid {
-                          translation 0 0.015000023114267952 0
+                          translation -2.5387368481948706e-10 0.014330405983770646 -0.0044317217612213754
+                          rotation -0.9999997130873021 -0.0007490023662541027 0.00011322883427153844 0.2999241495673711
                           children [
                             Connector {
                               translation 0 0.015 0
@@ -288,15 +301,25 @@ DEF Launcher_robot Robot {
                           ]
                           boundingObject USE Cylinder_proj
                           physics Physics {
-                            density 100
+                            density 10
                           }
                         }
                       }
                     ]
+                    boundingObject USE tether_endpoint
+                    physics Physics {
+                      density -1
+                      mass 0.005
+                    }
                   }
                 }
               ]
               name "solid(1)"
+              boundingObject USE tether_endpoint
+              physics Physics {
+                density -1
+                mass 0.005
+              }
             }
           }
           DEF Launchpad Shape {

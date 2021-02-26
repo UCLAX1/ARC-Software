@@ -12,7 +12,7 @@ typedef enum { INACTIVE, LOADING, CONNECTING, CLIMBING } states;
 int main(int argc, char **argv) {
   wb_robot_init();
   
-  states state = INACTIVE;
+  states state = CONNECTING;
   int iter = 0;
   
   // Enable spring motor
@@ -68,12 +68,12 @@ int main(int argc, char **argv) {
         
       case CLIMBING:
         wb_motor_set_force(spring_motor, 0);
-        wb_motor_set_force(tether_motor, -1.5);
+        wb_motor_set_position(tether_motor, 0.15);
         
          if (iter >= 50) {
-          state = INACTIVE;
+          state = CLIMBING;
           iter = 0;
-          wb_connector_unlock(connector);
+          //wb_connector_unlock(connector);
         }
     }
             
